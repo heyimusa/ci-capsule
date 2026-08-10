@@ -1,0 +1,20 @@
+name: "Feature request"
+description: "Propose a supported evidence-collection or analysis improvement"
+title: "feature: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "ci-capsule is read-only and fail-closed. Do not include credentials, signed URLs, private logs, or proprietary workflow content."
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and minimal synthetic example
+      description: Describe the expected evidence state or analysis behavior with synthetic input.
+    validations:
+      required: true
+  - type: textarea
+    id: limits
+    attributes:
+      label: Safety and scope considerations
+      description: Explain why the change should not execute commands, rerun workflows, or collect artifacts/caches.

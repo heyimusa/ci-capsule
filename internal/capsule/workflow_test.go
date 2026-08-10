@@ -35,6 +35,16 @@ func TestAnalyzeWorkflowReportsLiteralCommandAndSourceLine(t *testing.T) {
 	}
 }
 
+func TestAnalyzeWorkflowReportsMissingStep(t *testing.T) {
+	workflow, err := ParseWorkflow([]byte("jobs:\n  test:\n    steps:\n      - name: Test\n        run: go test ./...\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if report := AnalyzeWorkflow(workflow, "test", "Missing", nil); report.Replay.Reason == "" {
+		t.Fatalf("missing step analysis lacked reason: %#v", report)
+	}
+}
+
 func TestAnalyzeWorkflowRefusesEmptyCommand(t *testing.T) {
 	workflow, err := ParseWorkflow([]byte("jobs:\n  test:\n    steps:\n      - name: Test\n        run: '   '\n"))
 	if err != nil {

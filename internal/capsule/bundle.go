@@ -11,7 +11,12 @@ import (
 
 const BundleVersion = "0.1.0-dev"
 
-type Source struct{ Repository, RunURL, SHA, WorkflowPath string }
+type Source struct {
+	Repository   string `json:"repository"`
+	RunURL       string `json:"run_url"`
+	SHA          string `json:"sha"`
+	WorkflowPath string `json:"workflow_path"`
+}
 type Artifact struct {
 	Name      string `json:"name"`
 	SizeBytes int64  `json:"size_in_bytes"`

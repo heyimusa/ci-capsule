@@ -1,0 +1,58 @@
+name: draft-release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.0.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.0.0
+        with:
+          go-version: '1.25.7'
+      - name: Test
+        run: go test ./...
+      - name: Build release archive and SBOM
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/ci-capsule_${VERSION}_linux_amd64
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o dist/ci-capsule_${VERSION}_linux_amd64/ci-capsule ./cmd/ci-capsule
+          tar -C dist -czf dist/ci-capsule_${VERSION}_linux_amd64.tar.gz ci-capsule_${VERSION}_linux_amd64
+          python3 - <<'PY'
+          import hashlib, json, os
+          version = os.environ['VERSION']
+          archive = f'dist/ci-capsule_{version}_linux_amd64.tar.gz'
+          digest = hashlib.sha256(open(archive, 'rb').read()).hexdigest()
+          sbom = {
+              'bomFormat': 'CycloneDX', 'specVersion': '1.5', 'serialNumber': f'urn:uuid:ci-capsule-{version}', 'version': 1,
+              'metadata': {'component': {'type': 'application', 'name': 'ci-capsule', 'version': version}},
+              'components': [{'type': 'library', 'name': 'gopkg.in/yaml.v3', 'version': 'v3.0.1', 'licenses': [{'license': {'id': 'MIT'}}]}, {'type': 'library', 'name': 'golang.org/x/sys', 'version': 'v0.40.0', 'licenses': [{'license': {'id': 'BSD-3-Clause'}}]}],
+              'properties': [{'name': 'ci-capsule:artifact:sha256', 'value': digest}],
+          }
+          with open(f'dist/ci-capsule_{version}_sbom.cdx.json', 'w') as f: json.dump(sbom, f, sort_keys=True, indent=2); f.write('\n')
+          PY
+          (cd dist && sha256sum ci-capsule_${VERSION}_linux_amd64.tar.gz ci-capsule_${VERSION}_sbom.cdx.json > ci-capsule_${VERSION}_checksums.txt)
+          (cd dist && sha256sum -c ci-capsule_${VERSION}_checksums.txt)
+          tar -xzf dist/ci-capsule_${VERSION}_linux_amd64.tar.gz -C /tmp
+          test "$(/tmp/ci-capsule_${VERSION}_linux_amd64/ci-capsule --version)" = "${VERSION}"
+          python3 -c "import json; d=json.load(open('dist/ci-capsule_${VERSION}_sbom.cdx.json')); assert d['bomFormat'] == 'CycloneDX' and d['specVersion'] == '1.5'"
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh release create "$VERSION" \
+            --draft \
+            --title "$VERSION" \
+            --notes-file "Release_notes/${VERSION}.md" \
+            "dist/ci-capsule_${VERSION}_linux_amd64.tar.gz" \
+            "dist/ci-capsule_${VERSION}_sbom.cdx.json" \
+            "dist/ci-capsule_${VERSION}_checksums.txt"
