@@ -10,13 +10,20 @@ import (
 
 type Workflow struct{ Root *yaml.Node }
 type Replay struct {
-	State, Command, Script, Reason string
-	Line                           int
+	State   string `json:"state"`
+	Command string `json:"command,omitempty"`
+	Script  string `json:"script,omitempty"`
+	Reason  string `json:"reason,omitempty"`
+	Line    int    `json:"line,omitempty"`
 }
-type EnvironmentValue struct{ State, Value, Axis string }
+type EnvironmentValue struct {
+	State string `json:"state"`
+	Value string `json:"value,omitempty"`
+	Axis  string `json:"axis,omitempty"`
+}
 type Analysis struct {
-	Replay      Replay
-	Environment map[string]EnvironmentValue
+	Replay      Replay                      `json:"replay"`
+	Environment map[string]EnvironmentValue `json:"environment"`
 }
 
 // ParseWorkflow accepts exactly one strictly unambiguous YAML document.
@@ -131,6 +138,7 @@ func AnalyzeWorkflow(workflow *Workflow, jobName, stepName string, matrix map[st
 		}
 	}
 	if matched == nil {
+		result.Replay.Reason = "failed step is missing or ambiguous in static workflow YAML"
 		return result
 	}
 	run := mapValue(matched, "run")

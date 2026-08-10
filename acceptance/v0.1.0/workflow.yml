@@ -1,0 +1,5 @@
+jobs:
+  test:
+    steps:
+      - name: Test
+        run: go test ./...

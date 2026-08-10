@@ -7,6 +7,12 @@ import (
 	"testing"
 )
 
+func TestRunVersion(t *testing.T) {
+	if err := run([]string{"--version"}); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRunCreateAndInspect(t *testing.T) {
 	root := t.TempDir()
 	workflow := filepath.Join(root, "workflow.yml")

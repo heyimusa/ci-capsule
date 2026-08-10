@@ -1,0 +1,22 @@
+name: "Incorrect analysis or unsupported input"
+description: "Report a false assurance, incorrect evidence state, or unsupported workflow input"
+title: "analysis: "
+labels: ["bug", "analysis"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include credentials, signed URLs, private logs, internal hostnames, or proprietary workflow content. Use a minimized synthetic reproduction."
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected fail-closed result
+      description: State the expected candidate, evidence-only, or unavailable result.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic workflow and observed output
+      description: Provide only a minimal synthetic workflow excerpt and sanitized output.
+    validations:
+      required: true

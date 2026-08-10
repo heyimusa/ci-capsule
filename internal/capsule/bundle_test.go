@@ -43,6 +43,13 @@ func TestCreateBundleWritesSanitizedEvidenceAndInspection(t *testing.T) {
 	if bundle.Analysis.Replay.State != "candidate" || bundle.Artifacts.Policy != "metadata_only" {
 		t.Fatalf("bundle = %#v", bundle)
 	}
+	encoded, err := os.ReadFile(filepath.Join(dir, "bundle.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(encoded), "\"Replay\"") {
+		t.Fatalf("legacy JSON field names remain: %s", encoded)
+	}
 	inspection, err := InspectBundle(dir)
 	if err != nil {
 		t.Fatal(err)
