@@ -33,7 +33,10 @@ jobs:
           sbom = {
               'bomFormat': 'CycloneDX', 'specVersion': '1.5', 'serialNumber': f'urn:uuid:ci-capsule-{version}', 'version': 1,
               'metadata': {'component': {'type': 'application', 'name': 'ci-capsule', 'version': version}},
-              'components': [{'type': 'library', 'name': 'gopkg.in/yaml.v3', 'version': 'v3.0.1', 'licenses': [{'license': {'id': 'MIT'}}]}, {'type': 'library', 'name': 'golang.org/x/sys', 'version': 'v0.40.0', 'licenses': [{'license': {'id': 'BSD-3-Clause'}}]}],
+              'components': [
+                {'type': 'library', 'name': 'gopkg.in/yaml.v3', 'version': 'v3.0.1', 'licenses': [{'license': {'id': 'MIT'}}, {'license': {'id': 'Apache-2.0'}}]},
+                {'type': 'library', 'name': 'golang.org/x/sys', 'version': 'v0.40.0', 'licenses': [{'license': {'id': 'BSD-3-Clause'}}]},
+              ],
               'properties': [{'name': 'ci-capsule:artifact:sha256', 'value': digest}],
           }
           with open(f'dist/ci-capsule_{version}_sbom.cdx.json', 'w') as f: json.dump(sbom, f, sort_keys=True, indent=2); f.write('\n')
