@@ -1,0 +1,12 @@
+# Go build outputs
+/bin/
+/ci-capsule
+
+# Local evidence bundles
+*.capsule/
+/tmp/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
