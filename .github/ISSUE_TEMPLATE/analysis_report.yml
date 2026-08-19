@@ -1,7 +1,7 @@
 name: "Incorrect analysis or unsupported input"
 description: "Report a false assurance, incorrect evidence state, or unsupported workflow input"
 title: "analysis: "
-labels: ["bug", "analysis"]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
