@@ -25,6 +25,8 @@ recovered command, runs a workflow, downloads artifact content, uploads a
 bundle, or forwards a GitHub API token to redirected log-storage hosts.
 
 A missed redaction, potentially misleading security claim, or incorrect
-analysis result may be important without necessarily being a vulnerability.
-Use the relevant public issue form with sanitized data when private disclosure
-is not required.
+analysis result may be important without necessarily being a vulnerability. A
+public report must use a fully synthetic, minimized reproduction only. If a
+report involves a real bundle, log, workflow, URL, hostname, credential, or any
+uncertainty about whether redaction succeeded, use the private advisory channel
+instead.
