@@ -1,0 +1,30 @@
+name: Redaction or false-assurance concern
+description: Report potentially unsafe redaction behavior or a claim that could overstate what ci-capsule proves
+title: "sanitization: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste real credentials, signed URLs, private logs, internal hostnames, proprietary workflow content, or a real bundle. Use a synthetic placeholder or report a suspected vulnerability privately.
+  - type: textarea
+    id: concern
+    attributes:
+      label: Potentially unsafe behavior or claim
+      description: Quote the sanitized output or documentation and explain the assurance it could create.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal synthetic reproduction
+      description: Provide synthetic input and expected fail-closed behavior. Never include sensitive source material.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ci-capsule version
+      placeholder: v0.1.0
+    validations:
+      required: true

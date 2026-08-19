@@ -1,5 +1,9 @@
 # ci-capsule
 
+[![test](https://github.com/heyimusa/ci-capsule/actions/workflows/test.yml/badge.svg)](https://github.com/heyimusa/ci-capsule/actions/workflows/test.yml)
+[![release](https://img.shields.io/github/v/release/heyimusa/ci-capsule)](https://github.com/heyimusa/ci-capsule/releases)
+[![license](https://img.shields.io/github/license/heyimusa/ci-capsule)](LICENSE)
+
 **Package a failed GitHub Actions run into local, sanitized evidence—then show a deterministic replay candidate only when the workflow source proves one.**
 
 `ci-capsule` is a read-only, owner-operated **Linux** CLI. It is not a GitHub runner emulator and it never executes a recovered command.
@@ -25,6 +29,22 @@ For a checkout:
 ```bash
 go build -o ./bin/ci-capsule ./cmd/ci-capsule
 ```
+
+## Install and verify a release
+
+Download the Linux archive, its `checksums.txt`, and its CycloneDX SBOM from the
+same [GitHub release](https://github.com/heyimusa/ci-capsule/releases). Verify
+both checksummed assets before extracting the binary:
+
+```sh
+sha256sum -c ci-capsule_vX.Y.Z_checksums.txt
+tar -xzf ci-capsule_vX.Y.Z_linux_amd64.tar.gz
+./ci-capsule_vX.Y.Z_linux_amd64/ci-capsule --version
+```
+
+A matching checksum establishes byte equality against the release checksum. It
+does not prove that an artifact or its inputs are safe, secret-free, or suitable
+for a particular environment.
 
 ## Quick start
 
@@ -71,6 +91,14 @@ ci-capsule create \
 - artifact **metadata only**: name, size, expiry, and digest where GitHub supplies it.
 
 Artifact content, cache content, and tokens are not collected. Redaction is best-effort: secret-shaped or platform-masked values are removed, but unknown secret formats and sensitive non-credential text may remain.
+
+### About `audit`
+
+`ci-capsule audit` looks for supported credential-shaped indicators without
+printing their values. A clean result is not proof that a directory or bundle is
+secret-free. Conversely, a deliberately synthetic credential-shaped sentinel in
+a test fixture should cause `audit` to report an indicator and exit non-zero;
+that is expected evidence that the detector is active, not a real credential.
 
 ## Analysis states
 

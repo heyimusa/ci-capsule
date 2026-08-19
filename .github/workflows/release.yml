@@ -31,7 +31,7 @@ jobs:
           archive = f'dist/ci-capsule_{version}_linux_amd64.tar.gz'
           digest = hashlib.sha256(open(archive, 'rb').read()).hexdigest()
           sbom = {
-              'bomFormat': 'CycloneDX', 'specVersion': '1.5', 'serialNumber': f'urn:uuid:ci-capsule-{version}', 'version': 1,
+              'bomFormat': 'CycloneDX', 'specVersion': '1.5', 'version': 1,
               'metadata': {'component': {'type': 'application', 'name': 'ci-capsule', 'version': version}},
               'components': [
                 {'type': 'library', 'name': 'gopkg.in/yaml.v3', 'version': 'v3.0.1', 'licenses': [{'license': {'id': 'MIT'}}, {'license': {'id': 'Apache-2.0'}}]},

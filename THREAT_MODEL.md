@@ -52,4 +52,5 @@ Bundles are created with owner-only file modes where supported by the host. Arti
 
 ## Reporting a vulnerability
 
-Until a public repository exists, report a potential vulnerability privately to the project owner. Do not include a real credential in a report; provide a synthetic reproduction instead.
+Use GitHub's private security-advisory reporting for this repository. Do not
+include a real credential in a report; provide a synthetic reproduction instead.
