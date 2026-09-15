@@ -19,3 +19,9 @@ jobs:
       - run: go test ./...
       - run: go vet ./...
       - run: go build ./cmd/ci-capsule
+      - name: Build hardened container image
+        run: docker build --pull --tag ci-capsule:ci .
+      - name: Smoke-test the container without network or write access
+        run: |
+          set -euo pipefail
+          test "$(docker run --rm --read-only --network none --cap-drop ALL --security-opt no-new-privileges:true --pids-limit 64 --memory 128m --cpus 1 --user 65532:65532 ci-capsule:ci --version)" = "dev"
